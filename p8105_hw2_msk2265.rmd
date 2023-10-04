@@ -2,6 +2,7 @@
 title: "p8105_hw2_msk2265"
 output: github_document
 ---
+
 ```{r setup}
 library(tidyverse)
 library(readxl)
@@ -9,15 +10,13 @@ library(readxl)
 
 ## Problem 2
 
-
 Read and clean the Mr. Trash Wheel sheet:
 
-- specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
-- use reasonable variable names
--omit rows that do not include dumpster-specific data (not sure what data is not dumpstir specific)
+-   specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
+-   use reasonable variable names -omit rows that do not include dumpster-specific data (not sure what data is not dumpstir specific)
 
- The data include a column for the (approximate) number of homes powered. This calculation is described in the Homes powered note, but not applied to every row in the dataset. Update the data to include a new homes_powered variable based on this calculation.
- 
+The data include a column for the (approximate) number of homes powered. This calculation is described in the Homes powered note, but not applied to every row in the dataset. Update the data to include a new homes_powered variable based on this calculation.
+
 ```{r}
 #decided to load the readxl library in case there are functions used in the background other than jusr readxl
 
@@ -27,7 +26,6 @@ mr_trash_wheel_df = read_excel("./data/202309 Trash Wheel Collection Data.xlsx",
     homes_powered = (weight_tons*500)/30 #formula based on the note in the excel spreadsheet: Homes Powered - Each ton of trash equates to on average 500 kilowatts of electricity.  An average household will use 30 kilowatts per day.
   )
 ```
-
 
 Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda. combine these with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to all datasets before combining.
 
@@ -68,10 +66,54 @@ trash_wheels_df =
 
 ```
 
-Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. 
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables.
 
-For available data, what was the total weight of trash collected by Professor Trash Wheel? 
+For available data, what was the total weight of trash collected by Professor Trash Wheel?
 
 What was the total number of cigarette butts collected by Gwynnda in July of 2021?
 
+## Problem 3
 
+Background:
+
+This problem uses data collected in an observational study to understand the trajectory of Alzheimer's disease (AD) biomarkers. Study participants were free of Mild Cognitive Impairment (MCI), a stage between the expected cognitive decline of normal aging and the more serious decline of dementia, at the study baseline.
+
+Basic demographic information were measured at the study baseline. The study monitored the development of MCI and recorded the age of MCI onset during the follow-up period, with the last visit marking the end of follow-up. APOE4 is a variant of the apolipoprotein E gene, significantly associated with a higher risk of developing Alzheimer's disease. The amyloid β 42/40 ratio holds significant promise for diagnosing and predicting disease outcomes. This ratio undergoes changes over time and has been linked to the manifestation of clinical symptoms of Alzheimer's disease.
+
+Instructions:
+
+Import, clean, and tidy the dataset of baseline demographics. Ensure that sex and APOE4 carrier status are appropriate encoded (i.e. not numeric), and remove any participants who do not meet the stated inclusion criteria (i.e. no MCI at baseline).
+
+```{r}
+mci_baseline_df = read_csv("./data/MCI_baseline.csv", skip = 1, na = ".") %>% #skipping the first line because it just contains descriptions of the variables. column titles are in row 2 of the csv. specifying that Na is "." 
+  janitor::clean_names() %>% 
+  drop_na(age_at_onset) %>% 
+  mutate(
+    sex = case_match(
+      sex, 
+      1 ~ "male",
+      0 ~ "female"
+    ),
+    apoe4 = case_match(
+      apoe4,
+      1 ~ "carrier",
+      0 ~ "non-carrier"
+    )
+  )
+
+
+```
+
+Discuss important steps in the import process and relevant features of the dataset.
+
+How many participants were recruited, and of these how many develop MCI?
+
+What is the average baseline age?
+
+What proportion of women in the study are APOE4 carriers?
+
+Similarly, import, clean, and tidy the dataset of longitudinally observed biomarker values; comment on the steps on the import process and the features of the dataset.
+
+Check whether some participants appear in only the baseline or amyloid datasets, and comment on your findings.
+
+Combine the demographic and biomarker datasets so that only participants who appear in both datasets are retained, and briefly describe the resulting dataset; export the result as a CSV to your data directory.
