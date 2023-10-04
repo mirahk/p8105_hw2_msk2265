@@ -85,9 +85,10 @@ Instructions:
 Import, clean, and tidy the dataset of baseline demographics. Ensure that sex and APOE4 carrier status are appropriate encoded (i.e. not numeric), and remove any participants who do not meet the stated inclusion criteria (i.e. no MCI at baseline).
 
 ```{r}
+#importing mci baseline data
+
 mci_baseline_df = read_csv("./data/MCI_baseline.csv", skip = 1, na = ".") %>% #skipping the first line because it just contains descriptions of the variables. column titles are in row 2 of the csv. specifying that Na is "." 
   janitor::clean_names() %>% 
-  drop_na(age_at_onset) %>% 
   mutate(
     sex = case_match(
       sex, 
@@ -99,20 +100,36 @@ mci_baseline_df = read_csv("./data/MCI_baseline.csv", skip = 1, na = ".") %>% #s
       1 ~ "carrier",
       0 ~ "non-carrier"
     )
-  )
+  ) #not dropping NA yet in order to answer the first few questions
+```
 
 
+```{r}
+#dropping the na to finish cleaning
+mci_baseline_df= drop_na(mci_baseline_df, age_at_onset)
 ```
 
 Discuss important steps in the import process and relevant features of the dataset.
 
+- For the import process, I had to skip the first row on the csv because it contained information on the variables and the actual variables were stored in the second column. I also specified the na= "." so that the . would be converted to an empty value. Then I could use drop_na to remove those rows
 How many participants were recruited, and of these how many develop MCI?
+
 
 What is the average baseline age?
 
+
 What proportion of women in the study are APOE4 carriers?
 
+
 Similarly, import, clean, and tidy the dataset of longitudinally observed biomarker values; comment on the steps on the import process and the features of the dataset.
+
+```{r}
+#loading the mci amyloid dataset
+mci_amyloid_df = read_csv("./data/mci_amyloid.csv", skip = 1, na = "NA", col_types = "nnnnnn") %>% #skipping the first line because it just contains descriptions of the variables. column titles are in row 2 of the csv. specifying that Na is "NA" 
+  janitor::clean_names() 
+```
+
+- for the mci amyloid dataset, I again had to skip the first row since the second row is what actually had the column titles. This time, the Na variables were stored as "NA" so I also specified that during the import. Lastly, I noticed that the time stamps were stored as character variables by using the view() function in my console, so i decided to specify the type of variables for each column. 
 
 Check whether some participants appear in only the baseline or amyloid datasets, and comment on your findings.
 
