@@ -22,7 +22,10 @@ Read and clean the Mr. Trash Wheel sheet:
 #decided to load the readxl library in case there are functions used in the background other than jusr readxl
 
 mr_trash_wheel_df = read_excel("./data/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N586") %>% 
-  janitor::clean_names()
+  janitor::clean_names() %>% 
+  mutate( 
+    homes_powered = (weight_tons*500)/30 #formula based on the note in the excel spreadsheet: Homes Powered - Each ton of trash equates to on average 500 kilowatts of electricity.  An average household will use 30 kilowatts per day.
+  )
 ```
 
 
