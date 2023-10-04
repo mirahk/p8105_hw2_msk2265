@@ -1,30 +1,21 @@
 ---
-title: "p8105_hw2_msk2265.Rmd"
-author: "Mirah"
-date: "`r Sys.Date()`"
+title: "p8105_hw2_msk2265"
 output: github_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup}
+library(tidyverse)
 ```
 
-## R Markdown
+## Problem 2
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+Read and clean the Mr. Trash Wheel sheet:
 
-```{r cars}
-summary(cars)
-```
+- specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
+- use reasonable variable names
+omit rows that do not include dumpster-specific data
+- The data include a column for the (approximate) number of homes powered. This calculation is described in the Homes powered note, but not applied to every row in the dataset. Update the data to include a new homes_powered variable based on this calculation.
 
-## Including Plots
+Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda, and combine these with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to all datasets before combining.
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables. For available data, what was the total weight of trash collected by Professor Trash Wheel? What was the total number of cigarette butts collected by Gwynnda in July of 202
