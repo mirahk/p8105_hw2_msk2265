@@ -10,12 +10,12 @@ library(readxl)
 
 ## Problem 2
 
-Read and clean the Mr. Trash Wheel sheet:
+**Read and clean the Mr. Trash Wheel sheet:**
 
--   specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
--   use reasonable variable names -omit rows that do not include dumpster-specific data (not sure what data is not dumpstir specific)
+-  **specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel**
+-   **use reasonable variable names -omit rows that do not include dumpster-specific data (not sure what data is not dumpstir specific)**
 
-The data include a column for the (approximate) number of homes powered. This calculation is described in the Homes powered note, but not applied to every row in the dataset. Update the data to include a new homes_powered variable based on this calculation.
+**The data include a column for the (approximate) number of homes powered. This calculation is described in the Homes powered note, but not applied to every row in the dataset. Update the data to include a new homes_powered variable based on this calculation.**
 
 ```{r}
 #decided to load the readxl library in case there are functions used in the background other than jusr readxl
@@ -27,7 +27,7 @@ mr_trash_wheel_df = read_excel("./data/202309 Trash Wheel Collection Data.xlsx",
   )
 ```
 
-Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda. combine these with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to all datasets before combining.
+**Use a similar process to import, clean, and organize the data for Professor Trash Wheel and Gwynnda. combine these with the Mr. Trash Wheel dataset to produce a single tidy dataset. To keep track of which Trash Wheel is which, you may need to add an additional variable to all datasets before combining.**
 
 ```{r}
 #loading professor trash wheel data in the same way that Mr. trash wheel was loaded
@@ -63,26 +63,47 @@ mr_trash_wheel_df=
 trash_wheels_df = 
   bind_rows(mr_trash_wheel_df, prof_trash_wheel_df, gwynnda_trash_wheel_df)
 
+#creating some summaries and filters to extract summary statistics for paragraph
 
+trash_wheels_weight = trash_wheels_df %>% 
+  summarise(mean = mean(weight_tons), max = max(weight_tons), min = min(weight_tons)) #finding min max and average for weight
+trash_wheels_weight
+
+ filter(trash_wheels_df, weight_tons == trash_wheels_weight$max) #calling all of the information on the dumpster for that max weight
+ filter(trash_wheels_df, weight_tons == trash_wheels_weight$min) #calling all of the information on the dumpster for that min
+ 
+trash_wheels_homes = trash_wheels_df %>% 
+  summarise(mean = mean(homes_powered), max = max(homes_powered), min = min(homes_powered)) #finding min max and average for homes powered
+trash_wheels_homes
+filter(trash_wheels_df, homes_powered == trash_wheels_homes$max)#calling all of the information on the dumpster for that max
+filter(trash_wheels_df, homes_powered == trash_wheels_homes$max)#calling all of the information on the dumpster for that min
 ```
 
-Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables.
+**Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in the resulting dataset, and give examples of key variables.**
 
-For available data, what was the total weight of trash collected by Professor Trash Wheel?
+For the the trash wheel dataset, there are a total of `r count(trash_wheels_df)` observations for Mr. trash wheel, professor trash wheel, and gwynnda trash wheel all together. Mr. trash wheel consisted of `r count(mr_trash_wheel_df)` observations, professor trash wheel consisted of `r count(prof_trash_wheel_df)` observations, and gwynnda trash wheel consisted of `r count(gwynnda_trash_wheel_df)`observations. The largest dumpster collection in total was 5.62 which was from mr. trash wheel, dumpster 62, the smallest was 0.61 which was from professor trash wheel, dumpster 67, and the average for all three was 3.01. The most homes powered was 93.7 again from mr trash wheel, dumpster 62, the smallest was 10.2 again from professor trash wheel, dumpster 67, and the average was 50.2. 
 
-What was the total number of cigarette butts collected by Gwynnda in July of 2021?
+**For available data, what was the total weight of trash collected by Professor Trash Wheel?**
+
+The total weight og trash collected by Professor Trash wheel is:
+`r sum(pull(prof_trash_wheel_df, weight_tons))` tons.
+
+**What was the total number of cigarette butts collected by Gwynnda in July of 2021?**
+
+The total number of cigarette butts collected by Gwynnda in July of 2021 is:
+`r sum(pull(filter(gwynnda_trash_wheel_df, year == 2021 & month == "July"), cigarette_butts))`
 
 ## Problem 3
 
-Background:
+*Background:*
 
-This problem uses data collected in an observational study to understand the trajectory of Alzheimer's disease (AD) biomarkers. Study participants were free of Mild Cognitive Impairment (MCI), a stage between the expected cognitive decline of normal aging and the more serious decline of dementia, at the study baseline.
+*This problem uses data collected in an observational study to understand the trajectory of Alzheimer's disease (AD) biomarkers. Study participants were free of Mild Cognitive Impairment (MCI), a stage between the expected cognitive decline of normal aging and the more serious decline of dementia, at the study baseline.*
 
-Basic demographic information were measured at the study baseline. The study monitored the development of MCI and recorded the age of MCI onset during the follow-up period, with the last visit marking the end of follow-up. APOE4 is a variant of the apolipoprotein E gene, significantly associated with a higher risk of developing Alzheimer's disease. The amyloid β 42/40 ratio holds significant promise for diagnosing and predicting disease outcomes. This ratio undergoes changes over time and has been linked to the manifestation of clinical symptoms of Alzheimer's disease.
+*Basic demographic information were measured at the study baseline. The study monitored the development of MCI and recorded the age of MCI onset during the follow-up period, with the last visit marking the end of follow-up. APOE4 is a variant of the apolipoprotein E gene, significantly associated with a higher risk of developing Alzheimer's disease. The amyloid β 42/40 ratio holds significant promise for diagnosing and predicting disease outcomes. This ratio undergoes changes over time and has been linked to the manifestation of clinical symptoms of Alzheimer's disease.*
 
-Instructions:
+**Instructions:**
 
-Import, clean, and tidy the dataset of baseline demographics. Ensure that sex and APOE4 carrier status are appropriate encoded (i.e. not numeric), and remove any participants who do not meet the stated inclusion criteria (i.e. no MCI at baseline).
+**Import, clean, and tidy the dataset of baseline demographics. Ensure that sex and APOE4 carrier status are appropriate encoded (i.e. not numeric), and remove any participants who do not meet the stated inclusion criteria (i.e. no MCI at baseline).**
 
 ```{r}
 #importing mci baseline data
@@ -109,16 +130,17 @@ mci_baseline_df = read_csv("./data/MCI_baseline.csv", skip = 1, na = ".") %>% #s
 mci_baseline_df= drop_na(mci_baseline_df, age_at_onset)
 ```
 
-Discuss important steps in the import process and relevant features of the dataset.
+**Discuss important steps in the import process and relevant features of the dataset.**
 
 - For the import process, I had to skip the first row on the csv because it contained information on the variables and the actual variables were stored in the second column. I also specified the na= "." so that the . would be converted to an empty value. Then I could use drop_na to remove those rows
-How many participants were recruited, and of these how many develop MCI?
+
+**How many participants were recruited, and of these how many develop MCI?**
 
 
-What is the average baseline age?
+**What is the average baseline age?**
 
 
-What proportion of women in the study are APOE4 carriers?
+**What proportion of women in the study are APOE4 carriers?**
 
 
 Similarly, import, clean, and tidy the dataset of longitudinally observed biomarker values; comment on the steps on the import process and the features of the dataset.
