@@ -156,6 +156,7 @@ The average baseline age is 65.05 for all of the recruted participants and it is
 **What proportion of women in the study are APOE4 carriers?**
 
 ```{r}
+#calculating the proportion of women who are carriers
 women_carriers_mci_baseline = mci_baseline_df %>% 
   filter(sex == "female") %>% 
   count(apoe4)
@@ -194,3 +195,4 @@ mci_df = inner_join(mci_baseline_df, mci_amyloid_df, by = "id") #joining data
 write_csv(mci_df, "./data/mci_total_data.csv")
 ```
 
+The resulting dataset contains 94 participants, their sex, baseline age, education, age at onset, carrier status, and 4 additional time points of mci data. Not all participants have all 4 time points of data. The average mci at baseline is `r mean(pull(mci_df, baseline))` and at time 8 is `r mean(pull(mci_df, time_8), na.rm = TRUE)`. 
